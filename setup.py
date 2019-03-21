@@ -7,7 +7,7 @@ setup(name='almaapi',
       author='Gustav Lindqvist',
       author_email='gustav.lindqvist@ju.se',
       license='MIT',
-      packages=['almaapi'],
+      packages=['almaapi', 'almamarc'],
       install_requires=[
             'httplib2'
       ],
