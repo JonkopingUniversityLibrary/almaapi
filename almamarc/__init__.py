@@ -9,28 +9,41 @@ class AlmaMARCException(Exception):
 class Record:
 
     def __init__(self, input, file=False):
-        if file:
-            self.xml = ElementTree.parse(input)
-        else:
-            self.xml = ElementTree.ElementTree(ElementTree.fromstring(input))
 
+        # Parse string or file into XML Object
+        def __parse__(i, f):
+            if f:
+                return ElementTree.parse(i)
+            else:
+                return ElementTree.ElementTree(ElementTree.fromstring(i))
+        self.xml = __parse__(input, file)
+
+        # Set root and type
+        root = self.xml.getroot()
+        self.type = root.tag
+
+        # Except if type is not Bib MARC or Holding Marc
+        if self.type != 'bib' and self.type != 'holding':
+            raise AlmaMARCException('Not a MARC XML Object')
+
+        # Map record fields to a list
         self.fields = list(self.xml.findall('.//record/*'))
 
-        self.mms_id = self.xml.find('.//mms_id').text
-        self.record_format = self.xml.find('.//record_format').text
-        self.holdings_link = self.xml.find('.//holdings').attrib['link']
-        self.created_by = self.xml.find('.//created_by').text
-        self.created_date = self.xml.find('.//created_date').text
-        self.last_modified_by = self.xml.find('.//last_modified_by').text
-        self.last_modified_date = self.xml.find('.//last_modified_date').text
-        self.suppress_from_publishing = self.xml.find('.//suppress_from_publishing').text
-        self.originating_system = self.xml.find('.//originating_system').text
-        self.originating_system_id = self.xml.find('.//originating_system_id').text
+        # Get the attributes of the XMl Object
+        def __get_attributes__(xml):
+            record = xml.find('.//record')
+            attributes = list(xml.findall('./'))
+            attributes.remove(record)
 
+            output = {}
+            for attribute in attributes:
+                output[attribute.tag] = attribute.text
+
+            return output
+        self.attributes = __get_attributes__(self.xml)
+
+        # Create list in an attribute for saving fields for later
         self.loaded_fields = []
-
-        if not self.fields:
-            raise AlmaMARCException('Not a MARC XML Object')
 
     def get_fields(self, field_type='datafield', tag=None):
 
