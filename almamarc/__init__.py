@@ -42,14 +42,12 @@ class Record:
             return output
         self.attributes = __get_attributes__(self.xml)
 
-        # Create list in an attribute for saving fields for later
-        self.loaded_fields = []
-
     def get_fields(self, field_type='datafield', tag=None):
 
         array = []
 
         for field in self.fields:
+
             # If no tag is specified, grab all fields with the same type
             if not tag:
                 if field.tag == field_type:
