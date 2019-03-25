@@ -67,10 +67,10 @@ class Record:
         new_field = ElementTree.Element(field_type, tag=tag, ind1=ind1, ind2=ind2)
 
         if subfields is None:
-            subfields = []
-        for subfield in subfields:
-            new_subfield = ElementTree.Element('subfield', code=subfield['code'])
-            new_subfield.text = subfield['value']
+            subfields = {}
+        for code, value in subfields.items():
+            new_subfield = ElementTree.Element('subfield', code=code)
+            new_subfield.text = value
             new_field.append(new_subfield)
 
         record_root.append(new_field)
@@ -78,6 +78,7 @@ class Record:
         return fields
 
     def to_string(self):
+        # Write to fake file so that we can write our own XML declaration string.
         fake_file = bytes()
         self.xml.write(fake_file, encoding='utf-8', xml_declaration=False)
         return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + fake_file.getvalue().decode('utf-8')
