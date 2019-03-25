@@ -29,6 +29,8 @@ class Record:
         # Map record fields to a list
         self.fields = list(self.xml.findall('.//record/*'))
 
+
+
         # Get the attributes of the XMl Object
         def __get_attributes__(xml):
             record = xml.find('.//record')
