@@ -1,4 +1,9 @@
 import httplib2 as http
+import xml.etree.ElementTree as ElementTree
+
+
+class AlmaAPIException(Exception):
+    """Custom docstring"""
 
 
 class AlmaAPI:
@@ -17,6 +22,12 @@ class AlmaAPI:
 
         (response, content) = http.Http().request(url)
 
+        if response.status != '200':
+            # print(response)
+            root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
+            error_message = root[1][0][1].text
+            raise AlmaAPIException(str(response.status) + ': ' + error_message)
+
         return content.decode('utf8')
 
     def put(self, mms_id, body):
@@ -24,5 +35,9 @@ class AlmaAPI:
         headers = {'Content-type': 'application/xml'}
 
         (response, content) = http.Http().request(url, 'PUT', headers=headers, body=body)
+        if response.status != '200':
+            root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
+            error_message = root[1][0][1].text
+            raise AlmaAPIException(str(response.status) + ': ' + error_message)
 
         return content.decode('utf8')
