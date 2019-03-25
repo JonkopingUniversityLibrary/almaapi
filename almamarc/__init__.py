@@ -102,10 +102,11 @@ class Field:
         return None
 
     def add_subfield(self, code, value):
-        field = self.__reference__
         new_subfield = ElementTree.Element('subfield', code=code)
         new_subfield.text = value
-        return field.get_subfield(code=code)
+        self.subfields.append(Subfield(new_subfield))
+        self.__reference__.append(new_subfield)
+        return self.get_subfield(code=code)
 
     def get_subfields(self):
         return self.subfields
