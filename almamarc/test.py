@@ -1,7 +1,7 @@
 import unittest
 import os
 import io
-from . import almamarc
+import almamarc
 
 
 def strip_white_space(string):
