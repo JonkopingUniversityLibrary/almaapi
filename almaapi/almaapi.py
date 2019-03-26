@@ -12,7 +12,10 @@ class AlmaAPI:
         self.api_url = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1/' + api + '/'
         self.api_key = '?apikey=' + api_key
 
-    def get(self, mms_id, query_params=None):
+    def get(self, *, mms_id=False, query_params=None):
+        if mms_id is False:
+            return False
+
         __query_params__ = ''
         if query_params is not None:
             for key, value in query_params.items():
@@ -29,7 +32,10 @@ class AlmaAPI:
 
         return content.decode('utf8')
 
-    def put(self, mms_id, body, query_params=None):
+    def put(self, *, mms_id=False, body=False, query_params=None):
+        if mms_id is False or body is False:
+            return False
+
         __query_params__ = ''
         if query_params is not None:
             for key, value in query_params.items():
