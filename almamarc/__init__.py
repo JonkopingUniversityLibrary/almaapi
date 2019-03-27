@@ -3,7 +3,7 @@ from io import BytesIO as bytes
 
 
 class AlmaMARCException(Exception):
-    """Custom docstring"""
+    pass
 
 
 class Record:
@@ -75,6 +75,22 @@ class Record:
         self.fields.append(new_field)
         record_root.append(new_field)
         return self.get_fields(field_type=field_type, tag=tag)
+
+    def remove_fields(self, *, tag=False, field_type='datafield'):
+        record_root = self.xml.find('.//record')
+        removal_list = []
+        for field in self.fields:
+            if not tag:
+                if field.tag == field_type:
+                    removal_list.append(field)
+                    record_root.remove(field)
+            else:
+                if field.attrib.get('tag') == tag and field.tag == field_type:
+                    removal_list.append(field)
+                    record_root.remove(field)
+
+        self.fields = [e for e in self.fields if e not in removal_list]
+        return self.fields
 
     def to_string(self):
         # Write to fake file so that we can write our own XML declaration string.
