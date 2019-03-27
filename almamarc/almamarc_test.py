@@ -8,6 +8,8 @@ normalmarc_file = os.path.dirname(__file__) + '/normalmarc.xml'
 almamarc_xml = open(almamarc_file, encoding='utf8').read()
 normalmarc_xml = open(normalmarc_file, encoding='utf8').read()
 
+# TODO Remove io and replace with mocks
+
 
 def strip_white_space(string):
     return string.replace(' ', '').replace('\t', '').replace('\n', '')

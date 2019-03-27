@@ -28,7 +28,7 @@ class AlmaAPI:
         if response.status != 200:
             root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
             error_message = root[1][0][1].text
-            raise AlmaAPIException(str(response.status) + ': ' + error_message)
+            raise AlmaAPIException('GET ' + str(response.status) + ': ' + error_message)
 
         return content.decode('utf8')
 
@@ -48,6 +48,6 @@ class AlmaAPI:
         if response.status != 200:
             root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
             error_message = root[1][0][1].text
-            raise AlmaAPIException(str(response.status) + ': ' + error_message)
+            raise AlmaAPIException('PUT ' + str(response.status) + ': ' + error_message)
 
         return content.decode('utf8')
