@@ -2,6 +2,7 @@ import httplib2 as http
 import xml.etree.ElementTree as ElementTree
 import json
 
+
 class AlmaAPIException(Exception):
     """Custom docstring"""
 
