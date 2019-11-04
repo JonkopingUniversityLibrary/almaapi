@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='almaapi',
-      version='1.0',
+      version='1.1',
       description='Python module for making requests to the Alma API',
       url='https://github.com/JonkopingUniversityLibrary/almaapi',
       author='Gustav Lindqvist',
