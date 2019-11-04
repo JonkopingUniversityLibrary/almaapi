@@ -2,7 +2,6 @@ import httplib2 as http
 import xml.etree.ElementTree as ElementTree
 import json
 
-
 class AlmaAPIException(Exception):
     """Custom docstring"""
 
@@ -51,6 +50,31 @@ class AlmaAPI:
         headers = {'Content-type': 'application/xml'}
 
         (response, content) = http.Http().request(url, 'PUT', headers=headers, body=body)
+        if response.status != 200:
+            if query_params['format'] == 'json':
+                error_data = json.loads(content)
+                error_message = error_data['errorList']['error'][0]['errorMessage']
+                raise AlmaAPIException('PUT ' + str(response.status) + ': ' + error_message)
+            else:
+                root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
+                error_message = root[1][0][1].text
+                raise AlmaAPIException('PUT ' + str(response.status) + ': ' + error_message)
+
+        return content.decode('utf8')
+
+    def post(self, *, request=False, body=False, query_params=None):
+        if request is False or body is False:
+            return False
+
+        __query_params__ = ''
+        if query_params is not None:
+            for key, value in query_params.items():
+                __query_params__ += '&' + key + '=' + value
+
+        url = self.api_url + request + self.api_key + __query_params__
+        headers = {'Content-type': 'application/xml'}
+
+        (response, content) = http.Http().request(url, 'POST', headers=headers, body=body)
         if response.status != 200:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
