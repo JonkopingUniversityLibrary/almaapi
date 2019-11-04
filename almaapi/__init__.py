@@ -62,7 +62,7 @@ class AlmaAPI:
 
         return content.decode('utf8')
 
-    def post(self, *, request=False, body=False, query_params=None):
+    def post(self, *, request=False, body=False, query_params=None, content_type='application/xml'):
         if request is False or body is False:
             return False
 
@@ -72,12 +72,13 @@ class AlmaAPI:
                 __query_params__ += '&' + key + '=' + value
 
         url = self.api_url + request + self.api_key + __query_params__
-        headers = {'Content-type': 'application/xml'}
+        headers = {'Content-type': content_type}
 
         (response, content) = http.Http().request(url, 'POST', headers=headers, body=body)
         if response.status != 200:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
+                print(error_data)
                 error_message = error_data['errorList']['error'][0]['errorMessage']
                 raise AlmaAPIException('PUT ' + str(response.status) + ': ' + error_message)
             else:
