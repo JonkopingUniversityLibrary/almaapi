@@ -2,6 +2,7 @@ import httplib2 as http
 import xml.etree.ElementTree as ElementTree
 import json
 
+
 class AlmaAPIException(Exception):
     """Custom docstring"""
 
@@ -37,7 +38,7 @@ class AlmaAPI:
 
         return content.decode('utf8')
 
-    def put(self, *, request=False, body=False, query_params=None):
+    def put(self, *, request=False, body=False, query_params=None, content_type='application/xml'):
         if request is False or body is False:
             return False
 
@@ -47,7 +48,7 @@ class AlmaAPI:
                 __query_params__ += '&' + key + '=' + value
 
         url = self.api_url + request + self.api_key + __query_params__
-        headers = {'Content-type': 'application/xml'}
+        headers = {'Content-type': content_type}
 
         (response, content) = http.Http().request(url, 'PUT', headers=headers, body=body)
         if response.status != 200:

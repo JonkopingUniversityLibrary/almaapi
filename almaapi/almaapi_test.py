@@ -35,4 +35,4 @@ class AlmaAPITest(unittest.TestCase):
 
         # Should raise AlmaAPIException when the request response status is not 200
         with self.assertRaises(almaapi.AlmaAPIException):
-                test_client.get(request='request')
+            test_client.get(request='request')
