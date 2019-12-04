@@ -30,11 +30,11 @@ class AlmaAPI:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
                 error_message = error_data['errorList']['error'][0]['errorMessage']
-                raise AlmaAPIException('GET ' + str(response.status) + ': ' + error_message)
+                raise AlmaAPIException('GET - ' + str(response.status) + ' - ' + error_message)
             else:
                 root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
                 error_message = root[1][0][1].text
-                raise AlmaAPIException('GET ' + str(response.status) + ': ' + error_message)
+                raise AlmaAPIException('GET - ' + str(response.status) + ' - ' + error_message)
 
         return content.decode('utf8')
 
@@ -55,11 +55,11 @@ class AlmaAPI:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
                 error_message = error_data['errorList']['error'][0]['errorMessage']
-                raise AlmaAPIException('PUT ' + str(response.status) + ': ' + error_message)
+                raise AlmaAPIException('PUT - ' + str(response.status) + ' - ' + error_message)
             else:
                 root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
                 error_message = root[1][0][1].text
-                raise AlmaAPIException('PUT ' + str(response.status) + ': ' + error_message)
+                raise AlmaAPIException('PUT - ' + str(response.status) + ' - ' + error_message)
 
         return content.decode('utf8')
 
@@ -81,10 +81,10 @@ class AlmaAPI:
                 error_data = json.loads(content)
                 print(error_data)
                 error_message = error_data['errorList']['error'][0]['errorMessage']
-                raise AlmaAPIException('PUT ' + str(response.status) + ': ' + error_message)
+                raise AlmaAPIException('POST - ' + str(response.status) + ' - ' + error_message)
             else:
                 root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
                 error_message = root[1][0][1].text
-                raise AlmaAPIException('PUT ' + str(response.status) + ': ' + error_message)
+                raise AlmaAPIException('POST - ' + str(response.status) + ' - ' + error_message)
 
         return content.decode('utf8')
