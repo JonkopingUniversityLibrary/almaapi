@@ -29,7 +29,10 @@ class AlmaAPI:
         if response.status != 200:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
-                error_message = error_data['errorList']['error'][0]['errorMessage']
+                try:
+                    error_message = error_data['errorList']['error'][0]['errorMessage']
+                except KeyError as e:
+                    error_message = 'Unknown Error'
                 raise AlmaAPIException('GET - ' + str(response.status) + ' - ' + error_message)
             else:
                 root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
@@ -54,7 +57,10 @@ class AlmaAPI:
         if response.status != 200:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
-                error_message = error_data['errorList']['error'][0]['errorMessage']
+                try:
+                    error_message = error_data['errorList']['error'][0]['errorMessage']
+                except KeyError as e:
+                    error_message = 'Unknown Error'
                 raise AlmaAPIException('PUT - ' + str(response.status) + ' - ' + error_message)
             else:
                 root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
@@ -79,8 +85,10 @@ class AlmaAPI:
         if response.status != 200:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
-                print(error_data)
-                error_message = error_data['errorList']['error'][0]['errorMessage']
+                try:
+                    error_message = error_data['errorList']['error'][0]['errorMessage']
+                except KeyError as e:
+                    error_message = 'Unknown Error'
                 raise AlmaAPIException('POST - ' + str(response.status) + ' - ' + error_message)
             else:
                 root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
