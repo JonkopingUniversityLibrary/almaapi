@@ -24,7 +24,10 @@ class AlmaAPI:
 
         url = self.api_url + request + self.api_key + __query_params__
 
-        (response, content) = http.Http().request(url)
+        try:
+            (response, content) = http.Http().request(url)
+        except TimeoutError as e:
+            raise AlmaAPIException('GET - ' + str(e))
 
         if response.status != 200:
             if query_params['format'] == 'json':
@@ -53,7 +56,11 @@ class AlmaAPI:
         url = self.api_url + request + self.api_key + __query_params__
         headers = {'Content-type': content_type}
 
-        (response, content) = http.Http().request(url, 'PUT', headers=headers, body=body)
+        try:
+            (response, content) = http.Http().request(url, 'PUT', headers=headers, body=body)
+        except TimeoutError as e:
+            raise AlmaAPIException('PUT - ' + str(e))
+
         if response.status != 200:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
@@ -81,7 +88,11 @@ class AlmaAPI:
         url = self.api_url + request + self.api_key + __query_params__
         headers = {'Content-type': content_type}
 
-        (response, content) = http.Http().request(url, 'POST', headers=headers, body=body)
+        try:
+            (response, content) = http.Http().request(url, 'POST', headers=headers, body=body)
+        except TimeoutError as e:
+            raise AlmaAPIException('POST - ' + str(e))
+
         if response.status != 200:
             if query_params['format'] == 'json':
                 error_data = json.loads(content)
