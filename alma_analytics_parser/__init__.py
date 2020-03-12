@@ -1,5 +1,7 @@
 import xmljson
 from xml.etree.ElementTree import fromstring
+import re
+from collections import OrderedDict
 
 
 class AlmaAnalyticsException(Exception):
@@ -10,48 +12,45 @@ class AlmaAnalyticsParser:
 
     def __init__(self, i):
         def __parse_analytics__(xml_string):
-            result = xmljson.parker.data(fromstring(xml_string))
             urn_schema = '{urn:schemas-microsoft-com:xml-analysis:rowset}'
-            rows = result['QueryResult']['ResultXml'][urn_schema + 'rowset'][urn_schema + 'Row']
+            w3_schema = '{http://www.w3.org/2001/XMLSchema}'
 
-            def get_column_count():
-                count = 0
-                for row in rows:
-                    if len(row) > count:
-                        count = len(row)
-                return count - 1
+            raw_data = xmljson.badgerfish.data(fromstring(xml_string))
 
-            column_count = get_column_count()
+            def __get_column_names__():
+                snake_case_pattern = re.compile(r'(?<!^)(?=[A-Z])')
+
+                column_names = \
+                raw_data['report']['QueryResult']['ResultXml'][urn_schema + 'rowset'][w3_schema + 'schema'][
+                    w3_schema + 'complexType'][w3_schema + 'sequence'][w3_schema + 'element']
+
+                temp_column_names = []
+                for column in column_names[1:]:  # Remove first column since its just the integer
+                    for attribute, attribute_value in column.items():
+                        if attribute == '@{urn:saw-sql}columnHeading':
+                            temp_column_names.append(
+                                snake_case_pattern.sub('_', attribute_value).lower().replace(' ', ''))
+
+                return temp_column_names
+
+            def __get_rows__():
+                return raw_data['report']['QueryResult']['ResultXml'][urn_schema + 'rowset'][urn_schema + 'Row']
+
+            column_names = __get_column_names__()
             temp_table = []
 
-            for row in rows:
-                if column_count is 1:
-                    temp_row = None
-                    for column in row.items():
-                        try:
-                            column_number = int(column[0].replace(urn_schema + 'Column', ''))
-                            value = column[1]
-
-                            if column_number is 1:
-                                temp_row = value
-
-                        except ValueError:
-                            exit()
-                else:
-                    temp_row = [None] * column_count
-                    for column in row.items():
-                        try:
-                            column_number = int(column[0].replace(urn_schema + 'Column', ''))
-                            value = column[1]
-
-                            if column_number > 0:
-                                temp_row[column_number - 1] = value
-
-                        except ValueError:
-                            raise(AlmaAnalyticsException('Failed to load column number'))
+            for row in __get_rows__():
+                row.popitem(last=False)  # Remove the integer column
+                temp_row = OrderedDict()
+                iter = 0
+                for column, column_value in row.items():
+                    try:
+                        temp_row[column_names[iter]] = column_value['$']
+                        iter = iter + 1
+                    except ValueError:
+                        raise (AlmaAnalyticsException('Failed to load column number'))
 
                 temp_table.append(temp_row)
-
             return temp_table
 
         self.list = __parse_analytics__(i)
@@ -59,11 +58,10 @@ class AlmaAnalyticsParser:
     def get_table(self):
         return self.list
 
-    def get_values_from_column(self, column_number):
+    def get_column(self, column_name):
         temp_list = []
-        column_number = column_number - 1
         try:
             for row in self.list:
-                temp_list.append(row[column_number])
+                temp_list.append(row[column_name])
         except IndexError:
             return None
