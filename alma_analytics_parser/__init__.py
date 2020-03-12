@@ -34,7 +34,10 @@ class AlmaAnalyticsParser:
                 return temp_column_names
 
             def __get_rows__():
-                return raw_data['report']['QueryResult']['ResultXml'][urn_schema + 'rowset'][urn_schema + 'Row']
+                try:
+                    return raw_data['report']['QueryResult']['ResultXml'][urn_schema + 'rowset'][urn_schema + 'Row']
+                except KeyError:
+                    return None
 
             column_names = __get_column_names__()
             temp_table = []
