@@ -51,7 +51,8 @@ class AlmaAnalyticsParser:
                             raise(AlmaAnalyticsException('Failed to load column number'))
 
                 temp_table.append(temp_row)
-                print(temp_table)
+
+            return temp_table
 
         self.list = __parse_analytics__(i)
 
