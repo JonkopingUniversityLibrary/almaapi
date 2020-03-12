@@ -37,7 +37,7 @@ class AlmaAnalyticsParser:
                 try:
                     return raw_data['report']['QueryResult']['ResultXml'][urn_schema + 'rowset'][urn_schema + 'Row']
                 except KeyError:
-                    return None
+                    return []
 
             column_names = __get_column_names__()
             temp_table = []
