@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='alma_python_packages',
-      version='1.4',
+      version='1.4.1',
       description='Python module for making requests to the Alma API',
       url='https://github.com/JonkopingUniversityLibrary/almaapi',
       author='Gustav Lindqvist',
@@ -13,6 +13,7 @@ setup(name='alma_python_packages',
             'alma_marc'
       ],
       install_requires=[
-            'httplib2'
+            'httplib2',
+            'xmljson',
       ],
       zip_safe=False)
