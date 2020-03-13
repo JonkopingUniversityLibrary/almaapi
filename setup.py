@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='alma_python_packages',
-      version='1.4.6',
+      version='1.4.7',
       description='Python module for making requests to the Alma API',
       url='https://github.com/JonkopingUniversityLibrary/almaapi',
       author='Gustav Lindqvist',

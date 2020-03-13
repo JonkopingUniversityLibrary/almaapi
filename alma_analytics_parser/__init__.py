@@ -80,5 +80,6 @@ class AlmaAnalyticsParser:
         try:
             for row in self.list:
                 temp_list.append(row[column_name])
+            return temp_list
         except IndexError:
             return None
