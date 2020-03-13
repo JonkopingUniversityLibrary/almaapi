@@ -41,12 +41,27 @@ class AlmaAnalyticsParser:
 
             column_names = __get_column_names__()
             temp_table = []
+            rows = __get_rows__()
+            if type(rows) is list:  # More than one item in the list
+                for row in __get_rows__():
+                    row.popitem(last=False)  # Remove the integer column
+                    temp_row = OrderedDict()
+                    iter = 0
+                    for column, column_value in row.items():
+                        try:
+                            temp_row[column_names[iter]] = column_value['$']
+                            iter = iter + 1
+                        except ValueError:
+                            raise (AlmaAnalyticsException('Failed to load column number'))
 
-            for row in __get_rows__():
-                row.popitem(last=False)  # Remove the integer column
+                    temp_table.append(temp_row)
+                return temp_table
+            elif type(rows) is OrderedDict:
+                print('Is OrderedDict')
+                rows.popitem(last=False)  # Remove the integer column
                 temp_row = OrderedDict()
                 iter = 0
-                for column, column_value in row.items():
+                for column, column_value in rows.items():
                     try:
                         temp_row[column_names[iter]] = column_value['$']
                         iter = iter + 1
@@ -54,7 +69,7 @@ class AlmaAnalyticsParser:
                         raise (AlmaAnalyticsException('Failed to load column number'))
 
                 temp_table.append(temp_row)
-            return temp_table
+            print(temp_table)
 
         self.list = __parse_analytics__(i)
 
