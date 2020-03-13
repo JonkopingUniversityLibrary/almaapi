@@ -55,9 +55,7 @@ class AlmaAnalyticsParser:
                             raise (AlmaAnalyticsException('Failed to load column number'))
 
                     temp_table.append(temp_row)
-                return temp_table
             elif type(rows) is OrderedDict:
-                print('Is OrderedDict')
                 rows.popitem(last=False)  # Remove the integer column
                 temp_row = OrderedDict()
                 iter = 0
@@ -69,7 +67,8 @@ class AlmaAnalyticsParser:
                         raise (AlmaAnalyticsException('Failed to load column number'))
 
                 temp_table.append(temp_row)
-            print(temp_table)
+
+            return temp_table
 
         self.list = __parse_analytics__(i)
 
