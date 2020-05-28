@@ -6,7 +6,7 @@ class AlmaMARCException(Exception):
     pass
 
 
-class Record:
+class AlmaMARCRecord:
 
     def __init__(self, input, *, file=False):
 
