@@ -29,18 +29,21 @@ class AlmaAPI:
         except TimeoutError as e:
             raise AlmaAPIException('GET - ' + str(e))
 
-        if response.status != 200:
-            if query_params['format'] == 'json':
-                error_data = json.loads(content)
-                try:
-                    error_message = error_data['errorList']['error'][0]['errorMessage']
-                except KeyError as e:
-                    error_message = 'Unknown Error'
-                raise AlmaAPIException('GET - ' + str(response.status) + ' - ' + error_message)
-            else:
-                root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
-                error_message = root[1][0][1].text
-                raise AlmaAPIException('GET - ' + str(response.status) + ' - ' + error_message)
+        try:
+            if response.status != 200:
+                if query_params['format'] == 'json':
+                    error_data = json.loads(content)
+                    try:
+                        error_message = error_data['errorList']['error'][0]['errorMessage']
+                    except KeyError as e:
+                        error_message = 'Unknown Error'
+                    raise AlmaAPIException('GET - ' + str(response.status) + ' - ' + error_message)
+                else:
+                    root = ElementTree.ElementTree(ElementTree.fromstring(content)).getroot()
+                    error_message = root[1][0][1].text
+                    raise AlmaAPIException('GET - ' + str(response.status) + ' - ' + error_message)
+        except ElementTree.ParseError as e:
+            raise AlmaAPIException('GET - ' + str(e))
 
         return content.decode('utf8')
 
