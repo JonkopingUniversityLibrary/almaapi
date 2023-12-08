@@ -49,8 +49,7 @@ class AlmaAnalyticsParser:
                     iter = 0
                     for column, column_value in row.items():
                         try:
-                            temp_row[column_names[iter]] = column_value['$']
-                            iter = iter + 1
+                            temp_row[column_names[int(column[-1:])-1]] = column_value['$']
                         except ValueError:
                             raise (AlmaAnalyticsException('Failed to load column number'))
 
